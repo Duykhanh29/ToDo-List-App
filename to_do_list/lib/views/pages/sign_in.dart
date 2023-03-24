@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:to_do_list/data/inherited_widget/share_preference.dart';
 import 'package:to_do_list/data/models/user.dart';
 import 'package:to_do_list/views/pages/main_page.dart';
 import 'package:to_do_list/views/pages/register.dart';
@@ -20,12 +20,20 @@ class _SignInViewState extends State<SignInView> {
   late SharedPreferences pref;
   User? user;
 
+  resetNewLaunch() async {
+    //SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.containsKey("isLogin")) {
+      pref.setBool('isLogin', true);
+    } else {
+      pref.setBool('isLogin', true);
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
-    initPreferences();
+    initPreferences(context);
     super.initState();
-    //  loadinfor();
   }
 
   var usernameController = TextEditingController();
@@ -33,6 +41,9 @@ class _SignInViewState extends State<SignInView> {
   bool isVisblePassword = false;
   @override
   Widget build(BuildContext context) {
+    final state = StateContainer.of(context);
+    var user1 = state!.u;
+    print('Print in signIn:  ${user1!.username} and ${user1.password}');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -98,9 +109,6 @@ class _SignInViewState extends State<SignInView> {
                 const Spacer(),
                 TextButton(
                     onPressed: () {}, child: const Text("Forgot password?"))
-                //  const SizedBox(
-                //   height: 10,
-                // ),
               ],
             ),
             const SizedBox(
@@ -117,6 +125,25 @@ class _SignInViewState extends State<SignInView> {
                             borderRadius: BorderRadius.circular(20)))),
                 onPressed: () {
                   loginUser(usernameController.text, passwordController.text);
+                  if (usernameController.text != user!.username ||
+                      passwordController.text != user!.password) {
+                    print("Fail to sign in");
+                  } else {
+                    // final username = usernameController.text.trim();
+                    // final password = passwordController.text.trim();
+                    // final user1 = User(
+                    //     email: user!.email,
+                    //     password: password,
+                    //     username: username);
+                    // InheritedContainber.of(context)!.login(user!);
+
+                    resetNewLaunch();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const MainPage()));
+                  }
                 },
                 label: const Text(
                   "Sign In",
@@ -170,10 +197,16 @@ class _SignInViewState extends State<SignInView> {
     }
   }
 
-  void initPreferences() async {
+  void initPreferences(BuildContext context) async {
     pref = await SharedPreferences.getInstance();
+
+    // this is used for getting old data ( the latest account). To check when user input alrealdy account
     setState(() {
       user = User.fromJson(jsonDecode(pref.getString("userData")!));
     });
+    final state = StateContainer.of(context);
+    var user1 = state!.u;
+    print("Check 1: ${user!.username} and ${user!.password}");
+    print("Check 2: ${user1!.username} and ${user1.password}");
   }
 }

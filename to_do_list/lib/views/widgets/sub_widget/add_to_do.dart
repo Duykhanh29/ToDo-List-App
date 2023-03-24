@@ -32,7 +32,9 @@ class _AddToDoState extends State<AddToDo> {
       },
       onConfirm: (time) {
         setState(() {
-          startingTime = time;
+          startingTime =
+              DateTime(date.year, date.month, date.day, time.hour, time.minute);
+          print("Check the first startTime ${startingTime.toString()}");
         });
       },
       currentTime: DateTime.now(),
@@ -53,7 +55,9 @@ class _AddToDoState extends State<AddToDo> {
           return const SnackBar(content: Text("Input again"));
         } else {
           setState(() {
-            endingTime = time;
+            endingTime = DateTime(
+                date.year, date.month, date.day, time.hour, time.minute);
+            print("Check the first endTime ${endingTime.toString()}");
           });
         }
       },
@@ -427,6 +431,7 @@ class _AddToDoState extends State<AddToDo> {
                         color);
                     listProvider.addToDo(toDo);
                     print("Next id: ${listProvider.generateID}");
+                    listProvider.showAll();
                   },
                   child: const Text("Create"),
                 ),

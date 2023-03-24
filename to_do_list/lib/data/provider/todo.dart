@@ -84,7 +84,9 @@ class ToDo with ChangeNotifier {
         // print('onChanged time: $time');
       },
       onConfirm: (time) {
-        startingTime = time;
+        startingTime = DateTime(
+            date!.year, date!.month, date!.day, time.hour, time.minute);
+        print("Check end nha: ${startingTime.toString()}");
         notifyListeners();
       },
       currentTime: DateTime.now(),
@@ -104,7 +106,9 @@ class ToDo with ChangeNotifier {
         // if (time.compareTo(startingTime!) > 0) {
         //   return const SnackBar(content: Text("Input again"));
         // } else {
-        endingTime = time;
+        endingTime = DateTime(
+            date!.year, date!.month, date!.day, time.hour, time.minute);
+        print("Check end nha: ${endingTime.toString()}");
         notifyListeners();
         // }
       },
@@ -130,5 +134,9 @@ class ToDo with ChangeNotifier {
         return value;
       }
     });
+  }
+
+  void show() {
+    print("$id date: $date, start: $startingTime, end: $endingTime");
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list/data/inherited_widget/share_preference.dart';
 import 'package:to_do_list/data/models/user.dart';
 import 'package:to_do_list/data/provider/to_do_list_provider.dart';
 import 'package:to_do_list/views/pages/sign_in.dart';
@@ -38,14 +39,21 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    initPreferences();
+    initPreferences(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      print('Oke');
+    } else {
+      print('Print user nani: ${user!.username} and ${user!.password}');
+    }
+
     return Scaffold(
-      drawer: const AppDrawer(),
+      drawer: AppDrawer(),
+
       appBar: AppBar(
         title: const Text("TO DO LIST"),
         centerTitle: true,
@@ -78,7 +86,7 @@ class _MainPageState extends State<MainPage> {
             },
           ),
           IconButton(
-              onPressed: logout, icon: const Icon(Icons.logout_outlined)),
+              onPressed: () {}, icon: const Icon(Icons.filter_alt_outlined)),
         ],
       ),
       body: Padding(
@@ -93,7 +101,7 @@ class _MainPageState extends State<MainPage> {
                 left: 20.0,
               ),
               child: DatePicker(
-                DateTime(2023, 3, 15),
+                DateTime.now().subtract(const Duration(days: 10)),
                 width: 80,
                 height: 100,
                 selectedTextColor: Colors.pink,
@@ -135,20 +143,22 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void initPreferences() async {
+  void initPreferences(BuildContext context) async {
     pref = await SharedPreferences.getInstance();
 
     setState(() {
       user = User.fromJson(jsonDecode(pref.getString("userData")!));
     });
+    final state = StateContainer.of(context);
+    state!.updateInfor(user!);
   }
 
-  void logout() async {
-    pref.setBool("isLogin", false);
+  // void logout() async {
+  //   pref.setBool("isLogin", false);
 
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => const SignInView()));
-  }
+  //   Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (BuildContext context) => const SignInView()));
+  // }
 }

@@ -9,60 +9,70 @@ class ToDoListProvider with ChangeNotifier {
         1,
         "title01",
         "subtitle01",
-        DateTime(2023, 3, 15, 7, 0),
-        DateTime(2023, 3, 15, 8, 0),
+        DateTime.now()
+            .subtract(const Duration(days: 10, hours: 6, minutes: 10)),
+        DateTime.now()
+            .subtract(const Duration(days: 10, hours: 3, minutes: 30)),
         true,
-        DateTime(2023, 3, 15),
+        DateTime.now().subtract(const Duration(days: 10)),
         Colors.orange),
     ToDo(
         2,
         "title02",
         "subtitle02",
-        DateTime(2023, 3, 15, 7, 0),
-        DateTime(2023, 3, 15, 8, 0),
+        DateTime.now()
+            .subtract(const Duration(days: 10, hours: 4, minutes: 20)),
+        DateTime.now()
+            .subtract(const Duration(days: 10, hours: 3, minutes: 10)),
         false,
-        DateTime(2023, 3, 15),
+        DateTime.now().subtract(const Duration(days: 10)),
         Colors.orange),
     ToDo(
       3,
       "title03",
       "subtitle02",
-      DateTime(2023, 3, 15, 7, 0),
-      DateTime(2023, 3, 15, 8, 0),
+      DateTime.now().subtract(const Duration(days: 10, hours: 4, minutes: 10)),
+      DateTime.now().subtract(const Duration(days: 10, hours: 3, minutes: 30)),
       true,
-      DateTime(2023, 3, 15),
+      DateTime.now().subtract(const Duration(days: 10)),
       Colors.red,
     ),
     ToDo(
-        4,
-        "title04",
-        "subtitle02",
-        DateTime(
-          2023,
-          3,
-          15,
-          7,
-        ),
-        DateTime(2023, 3, 15, 8, 0),
-        false,
-        DateTime(2023, 3, 15),
-        Colors.red),
+      4,
+      "title04",
+      "subtitle02",
+      DateTime.now().subtract(const Duration(days: 10, hours: 5, minutes: 10)),
+      DateTime.now().subtract(const Duration(days: 10, hours: 3, minutes: 30)),
+      false,
+      DateTime.now().subtract(const Duration(days: 10)),
+      Colors.red,
+    ),
     ToDo(
         5,
         "title05",
         "subtitle02",
-        DateTime(2023, 3, 15, 7, 0),
-        DateTime(2023, 3, 15, 8, 0),
+        DateTime.now()
+            .subtract(const Duration(days: 10, hours: 4, minutes: 10)),
+        DateTime.now().subtract(const Duration(days: 10, hours: 4, minutes: 0)),
         true,
-        DateTime(2023, 2, 15),
+        DateTime.now().subtract(const Duration(days: 10)),
         Colors.orange),
-    ToDo(6, "title06", "subtitle02", DateTime(2023, 3, 15, 7, 0),
-        DateTime(2023, 3, 15, 8, 0), true, DateTime(2023, 3, 15), Colors.green),
+    ToDo(
+      6,
+      "title06",
+      "subtitle02",
+      DateTime.now().subtract(const Duration(days: 10, hours: 4, minutes: 10)),
+      DateTime.now().subtract(const Duration(days: 10, hours: 3, minutes: 20)),
+      true,
+      DateTime.now().subtract(const Duration(days: 10)),
+      Colors.green,
+    ),
   ];
   List<ToDo>? getListToDoList(DateTime date, int value) {
-    print("Datetime: $date");
+    //  print("Datetime: $date");
+    List<ToDo>? list;
     if (value == 3) {
-      return _list
+      list = _list
           .where((value) =>
               value.completed == false &&
               (date.day == value.date!.day &&
@@ -70,7 +80,7 @@ class ToDoListProvider with ChangeNotifier {
                   date.year == value.date!.year))
           .toList();
     } else if (value == 2) {
-      return _list
+      list = _list
           .where((value) =>
               value.completed == true &&
               (date.day == value.date!.day &&
@@ -78,12 +88,16 @@ class ToDoListProvider with ChangeNotifier {
                   date.year == value.date!.year))
           .toList();
     } else {
-      return _list
+      list = _list
           .where((value) => (date.day == value.date!.day &&
               date.month == value.date!.month &&
               date.year == value.date!.year))
           .toList();
     }
+    list.sort(
+      (a, b) => a.startingTime!.compareTo(b.startingTime!),
+    );
+    return list;
   }
 
   int get getLength {
@@ -129,5 +143,11 @@ class ToDoListProvider with ChangeNotifier {
       }
     }
     return id;
+  }
+
+  void showAll() {
+    for (var element in _list) {
+      element.show();
+    }
   }
 }

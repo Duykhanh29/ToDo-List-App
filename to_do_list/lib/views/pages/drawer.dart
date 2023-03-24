@@ -1,19 +1,33 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:to_do_list/data/inherited_widget/share_preference.dart';
+import 'package:to_do_list/data/models/user.dart';
+import 'package:to_do_list/views/pages/main_page.dart';
+import 'package:to_do_list/views/pages/sign_in.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  AppDrawer({super.key});
+  // User? user;
+  late SharedPreferences pref;
+  void logout() async {
+    pref = await SharedPreferences.getInstance();
+    pref.setBool("isLogin", false);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state = StateContainer.of(context);
+    var user1 = state!.u;
+    print('Print in Drawer:  ${user1!.username} and ${user1.password}');
     return Drawer(
       child: Column(
         children: <Widget>[
-          const UserAccountsDrawerHeader(
-            accountName: Text("Duy Khanh"),
-            accountEmail: Text("duykhanh0220@gmail.com"),
-            currentAccountPicture: CircleAvatar(
+          UserAccountsDrawerHeader(
+            accountName: Text(user1.username),
+            accountEmail: Text(user1.email),
+            currentAccountPicture: const CircleAvatar(
               radius: 60,
               child: CircleAvatar(
                 radius: 50,
@@ -27,7 +41,11 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home'),
             onTap: () {
-              Navigator.of(context).pushNamed('/');
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return const MainPage();
+                },
+              ));
             },
           ),
           const Divider(),
@@ -39,13 +57,6 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.person_2_outlined),
-            title: const Text('Profile'),
-            onTap: () {
-              Navigator.of(context).pushNamed('/profile');
-            },
-          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.delete_outline_outlined),
